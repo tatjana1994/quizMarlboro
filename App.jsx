@@ -1,22 +1,33 @@
-import { StatusBar } from "expo-status-bar"
-import React from "react"
-import { StyleSheet, Text, View } from "react-native"
+import * as React from "react"
+import { ImageBackground, StyleSheet } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+
+import Carousel from "./src/components/atoms/Carousel"
+import useCachedResources from "./src/hooks/useCachedResources"
+import backgroundImage from "./src/media/background/background-image.png"
 
 const App = () => {
+  const fontLoaded = useCachedResources()
+
+  if (!fontLoaded) {
+    return null
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
+        <Carousel />
+      </ImageBackground>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+  },
+  image: {
+    flex: 1,
   },
 })
 
