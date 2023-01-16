@@ -6,7 +6,7 @@ import { Platform, StyleSheet, View } from "react-native"
 import Button from "../../atoms/Button"
 import StyledText from "../../atoms/StyledText"
 
-const QuestionWrapper = ({ question, onAnswerPress, selectedAnswers, currentQuestionIndex }) => {
+const QuestionWrapper = ({ question, onAnswerPress, selectedAnswers, questionNumber }) => {
   const getButtonBgColor = answerId => {
     const selectedAnswer = selectedAnswers.find(answer => answer.questionId === question.id)
 
@@ -39,12 +39,10 @@ const QuestionWrapper = ({ question, onAnswerPress, selectedAnswers, currentQues
           intensity={Platform.OS === "ios" ? 40 : 50}
         >
           <View>
-            <StyledText style={styles.questionNumber}>{`Question ${
-              currentQuestionIndex + 1
-            }`}</StyledText>
+            <StyledText style={styles.questionNumber}>{`Question ${questionNumber}`}</StyledText>
             <StyledText style={styles.questionText}>{question.question}</StyledText>
           </View>
-          <View>
+          <View style={{ marginBottom: 20 }}>
             {question.answers.map(answer => {
               return (
                 <Button
@@ -58,7 +56,7 @@ const QuestionWrapper = ({ question, onAnswerPress, selectedAnswers, currentQues
                   }}
                   buttonText={answer.value}
                   textStyle={{
-                    fontSize: 26,
+                    fontSize: Platform.OS === "ios" ? 26 : 20,
                     color: "#ffffff",
                     fontFamily: "RobotoBold",
                     textShadowColor: "rgba(0, 0, 0, 1)",
@@ -82,24 +80,22 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
   },
-
   blurWrapper: {
     paddingTop: 40,
-    paddingBottom: 40,
     paddingRight: 40,
     paddingLeft: 40,
     borderRadius: 20,
-    minHeight: 500,
+    minHeight: Platform.OS === "ios" ? 460 : 440,
     justifyContent: "space-between",
   },
   questionNumber: {
-    fontSize: 24,
+    fontSize: Platform.OS === "ios" ? 24 : 18,
     color: "#262222",
     fontFamily: "RobotoBold",
     textAlign: "center",
   },
   questionText: {
-    fontSize: 28,
+    fontSize: Platform.OS === "ios" ? 24 : 20,
     color: "#ffffff",
     fontFamily: "RobotoBold",
     textAlign: "center",
@@ -113,14 +109,13 @@ QuestionWrapper.propTypes = {
   question: PropTypes.instanceOf(Object),
   onAnswerPress: PropTypes.func,
   selectedAnswers: PropTypes.instanceOf(Array),
-  currentQuestionIndex: PropTypes.number,
+  questionNumber: PropTypes.number.isRequired,
 }
 
 QuestionWrapper.defaultProps = {
   question: {},
   onAnswerPress: () => {},
   selectedAnswers: [],
-  currentQuestionIndex: 0,
 }
 
 export default QuestionWrapper

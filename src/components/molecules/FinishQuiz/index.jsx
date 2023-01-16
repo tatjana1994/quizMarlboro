@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import React from "react"
-import { StyleSheet, View } from "react-native"
+import { Platform, StyleSheet, View } from "react-native"
 
 import Button from "../../atoms/Button"
 import ScreenHeader from "../../atoms/ScreenHeader"
@@ -26,16 +26,16 @@ const FinishQuiz = ({ carouselRef, resetQuiz, setShowProgressBar, successfullyCo
             : "Try again and improve your score."
         }
         titleStyle={{
-          fontSize: successfullyCompleted ? 36 : 40,
-          paddingTop: successfullyCompleted ? 30 : 40,
+          fontSize: Platform.OS === "ios" ? 36 : 26,
+          paddingTop: 20,
         }}
-        subtitleStyle={{ fontSize: 24 }}
+        subtitleStyle={{ fontSize: Platform.OS === "ios" ? 20 : 16 }}
       />
       <View style={styles.button}>
         {successfullyCompleted ? (
           <Button
-            style={{ height: 55, borderRadius: 18, borderWidth: 2 }}
-            textStyle={{ fontSize: 34, color: "#ffffff", fontFamily: "RobotoBold" }}
+            style={{ height: 50, borderRadius: 18, borderWidth: 2 }}
+            textStyle={{ fontSize: 36, color: "#ffffff", fontFamily: "RobotoBold" }}
             buttonText="FINISH"
             onPress={handleFinishPress}
           />
@@ -43,19 +43,20 @@ const FinishQuiz = ({ carouselRef, resetQuiz, setShowProgressBar, successfullyCo
           <>
             <Button
               style={{
-                height: 66,
+                height: 50,
                 borderRadius: 18,
                 borderWidth: 2,
-                marginBottom: 20,
                 backgroundColor: "#ffffff",
+                marginBottom: 30,
+                marginTop: 20,
               }}
-              textStyle={{ fontSize: 34, color: "#d8a160", fontFamily: "RobotoBold" }}
+              textStyle={{ fontSize: 30, color: "#d8a160", fontFamily: "RobotoBold" }}
               buttonText="TRY AGAIN"
               onPress={handleTryAgainPress}
             />
             <Button
-              style={{ height: 66, borderRadius: 18, borderWidth: 2 }}
-              textStyle={{ fontSize: 34, color: "#ffffff", fontFamily: "RobotoBold" }}
+              style={{ height: 50, borderRadius: 18, borderWidth: 2 }}
+              textStyle={{ fontSize: 30, color: "#ffffff", fontFamily: "RobotoBold" }}
               buttonText="FINISH"
               onPress={handleFinishPress}
             />
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
-    top: -20,
+    top: -50,
   },
   button: {
     paddingHorizontal: 50,

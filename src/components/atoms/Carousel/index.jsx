@@ -13,14 +13,18 @@ import ProgressBar from "../ProgressBar"
 const Carousel = () => {
   const WIDTH = Dimensions.get("window").width
 
+  const shuffleQuestionsAndAnswers = useCallback(() => {
+    return shuffleArray(questions).map(item => ({ ...item, answers: shuffleArray(item.answers) }))
+  }, [questions])
+
   const [showProgressBar, setShowProgressBar] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState([])
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [shuffledQuestions, setShuffledQuestions] = useState(shuffleQuestionsAndAnswers())
 
   const carouselRef = useRef()
   const confettiRef = useRef()
-
-  const shuffledQuestions = useMemo(() => shuffleArray(questions), [questions])
 
   const successfullyCompleted = selectedAnswers.filter(item => item.correct).length >= 4
 
@@ -32,7 +36,7 @@ const Carousel = () => {
       if (isLastQuestion) {
         setShowProgressBar(false)
         if (successfullyCompleted) {
-          confettiRef.current.start()
+          setShowConfetti(true)
         }
       } else {
         setCurrentQuestionIndex(prev => prev + 1)
@@ -46,42 +50,33 @@ const Carousel = () => {
   const resetQuiz = () => {
     setCurrentQuestionIndex(0)
     setSelectedAnswers([])
+    setShuffledQuestions(shuffleQuestionsAndAnswers())
   }
 
   const carouselData = useMemo(() => {
     return [
-      {
-        component: (
-          <StartQuiz
-            onPlayPress={() => {
-              goToNextItem()
-              setShowProgressBar(true)
-            }}
+      <StartQuiz
+        onPlayPress={() => {
+          goToNextItem()
+          setShowProgressBar(true)
+        }}
+      />,
+      ...shuffledQuestions.map((question, index) => {
+        return (
+          <QuestionWrapper
+            question={question}
+            onAnswerPress={handleAnswerPress}
+            selectedAnswers={selectedAnswers}
+            questionNumber={index + 1}
           />
-        ),
-      },
-      ...shuffledQuestions.map(question => {
-        return {
-          component: (
-            <QuestionWrapper
-              question={question}
-              onAnswerPress={handleAnswerPress}
-              selectedAnswers={selectedAnswers}
-              currentQuestionIndex={currentQuestionIndex}
-            />
-          ),
-        }
+        )
       }),
-      {
-        component: (
-          <FinishQuiz
-            carouselRef={carouselRef}
-            resetQuiz={resetQuiz}
-            setShowProgressBar={setShowProgressBar}
-            successfullyCompleted={successfullyCompleted}
-          />
-        ),
-      },
+      <FinishQuiz
+        carouselRef={carouselRef}
+        resetQuiz={resetQuiz}
+        setShowProgressBar={setShowProgressBar}
+        successfullyCompleted={successfullyCompleted}
+      />,
     ]
   }, [shuffledQuestions, handleAnswerPress, selectedAnswers, currentQuestionIndex])
 
@@ -90,34 +85,35 @@ const Carousel = () => {
   }
 
   const renderCarouselItem = ({ item }) => {
-    return item.component
+    return item
   }
 
   return (
     <View
       style={{
         flex: 1,
-        position: "relative",
-        zIndex: 1,
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <ConfettiCannon
-        ref={confettiRef}
-        count={300}
-        origin={{ x: 0, y: -10 }}
-        fadeOut
-        autoStart={false}
-        fallSpeed={4000}
-        explosionSpeed={100}
-        colors={["#ffc562"]}
-      />
-      {showProgressBar && (
-        <ProgressBar
-          questions={shuffledQuestions}
-          currentQuestionIndex={currentQuestionIndex}
-          selectedAnswers={selectedAnswers}
+      {showConfetti && (
+        <ConfettiCannon
+          ref={confettiRef}
+          count={300}
+          origin={{ x: 0, y: 0 }}
+          fadeOut
+          autoStart
+          colors={["#ffc562"]}
+          onAnimationEnd={() => setShowConfetti(false)}
         />
       )}
+
+      <ProgressBar
+        questions={shuffledQuestions}
+        currentQuestionIndex={currentQuestionIndex}
+        selectedAnswers={selectedAnswers}
+        visible={showProgressBar}
+      />
       <RNRCarousel
         ref={carouselRef}
         width={WIDTH}

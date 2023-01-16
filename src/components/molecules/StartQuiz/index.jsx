@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import React from "react"
-import { StyleSheet, View } from "react-native"
+import { Platform, StyleSheet, View } from "react-native"
 
 import Button from "../../atoms/Button"
 import ScreenHeader from "../../atoms/ScreenHeader"
@@ -11,13 +11,13 @@ const StartQuiz = ({ onPlayPress }) => {
       <ScreenHeader
         title="Ready to take on the quiz?"
         subtitle={`Take the quiz, and if you answer correctly to at least 4 out of 5 questions,${"\n"}WIN A PRIZE!`}
-        titleStyle={{ fontSize: 48 }}
-        subtitleStyle={{ fontSize: 19 }}
+        titleStyle={{ fontSize: Platform.OS === "ios" ? 40 : 30 }}
+        subtitleStyle={{ fontSize: Platform.OS === "ios" ? 18 : 14 }}
       />
       <View style={styles.button}>
         <Button
-          style={{ height: 66, borderRadius: 18, borderWidth: 2 }}
-          textStyle={{ fontSize: 44, color: "#ffffff", fontFamily: "RobotoBold" }}
+          style={{ height: 50, borderRadius: 18, borderWidth: 2 }}
+          textStyle={{ fontSize: 36, color: "#ffffff", fontFamily: "RobotoBold" }}
           buttonText="PLAY"
           onPress={onPlayPress}
         />
@@ -29,7 +29,7 @@ const StartQuiz = ({ onPlayPress }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    top: -30,
+    top: -50,
   },
   button: {
     paddingHorizontal: 50,

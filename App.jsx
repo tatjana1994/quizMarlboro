@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ImageBackground, StyleSheet } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 
 import Carousel from "./src/components/atoms/Carousel"
 import useCachedResources from "./src/hooks/useCachedResources"
@@ -14,11 +14,11 @@ const App = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
         <Carousel />
       </ImageBackground>
-    </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 

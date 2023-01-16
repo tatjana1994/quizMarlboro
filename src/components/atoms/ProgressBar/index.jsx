@@ -1,11 +1,11 @@
 import PropTypes from "prop-types"
 import React from "react"
-import { StyleSheet, View } from "react-native"
+import { Platform, StyleSheet, View } from "react-native"
 
 import Icon from "../Icon"
 import StyledText from "../StyledText"
 
-const ProgressBar = ({ questions, currentQuestionIndex, selectedAnswers }) => {
+const ProgressBar = ({ questions, currentQuestionIndex, selectedAnswers, visible }) => {
   const getProgressBarItemBg = (index, id) => {
     if (currentQuestionIndex < index) {
       return "transparent"
@@ -20,51 +20,58 @@ const ProgressBar = ({ questions, currentQuestionIndex, selectedAnswers }) => {
 
   return (
     <View style={styles.container}>
-      <Icon style={{ marginLeft: 20 }} name="bookmark" width={40} height={40} fill="#ffffff" />
-      <View style={styles.progressBar}>
-        {questions.map((item, index) => {
-          const isFirst = index === 0
-          const isLast = index === questions.length - 1
-          return (
-            <View
-              key={index}
-              style={[
-                styles.progressBarItem,
-                {
-                  borderTopLeftRadius: isFirst ? 8 : 0,
-                  borderBottomLeftRadius: isFirst ? 8 : 0,
-                  borderTopRightRadius: isLast ? 8 : 0,
-                  borderBottomRightRadius: isLast ? 8 : 0,
-                  backgroundColor: getProgressBarItemBg(index, item.id),
-                },
-              ]}
-            />
-          )
-        })}
-      </View>
-      <StyledText
-        style={{
-          color: "#ffffff",
-          fontSize: 26,
-          paddingRight: 20,
-          fontFamily: "RobotoBold",
-        }}
-      >
-        {`${currentQuestionIndex + 1}/${questions.length}`}
-      </StyledText>
+      {visible && (
+        <>
+          <Icon style={{ marginLeft: 20 }} name="bookmark" width={36} height={36} fill="#ffffff" />
+          <View style={styles.progressBar}>
+            {questions.map((item, index) => {
+              const isFirst = index === 0
+              const isLast = index === questions.length - 1
+              return (
+                <View
+                  key={index}
+                  style={[
+                    styles.progressBarItem,
+                    {
+                      borderTopLeftRadius: isFirst ? 8 : 0,
+                      borderBottomLeftRadius: isFirst ? 8 : 0,
+                      borderTopRightRadius: isLast ? 8 : 0,
+                      borderBottomRightRadius: isLast ? 8 : 0,
+                      backgroundColor: getProgressBarItemBg(index, item.id),
+                    },
+                  ]}
+                />
+              )
+            })}
+          </View>
+          <StyledText
+            style={{
+              color: "#ffffff",
+              fontSize: 20,
+              paddingRight: 20,
+              fontFamily: "RobotoBold",
+            }}
+          >
+            {`${currentQuestionIndex + 1}/${questions.length}`}
+          </StyledText>
+        </>
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     position: "absolute",
-    top: 50,
+    top: Platform.OS === "ios" ? 60 : 20,
+    maxWidth: 450,
   },
   progressBar: {
-    height: 28,
+    height: 24,
     borderWidth: 2,
     borderColor: "#ffffff",
     borderRadius: 10,
@@ -82,12 +89,14 @@ ProgressBar.propTypes = {
   questions: PropTypes.instanceOf(Array),
   currentQuestionIndex: PropTypes.number,
   selectedAnswers: PropTypes.instanceOf(Object),
+  visible: PropTypes.bool,
 }
 
 ProgressBar.defaultProps = {
   questions: [],
   currentQuestionIndex: 0,
   selectedAnswers: {},
+  visible: false,
 }
 
 export default ProgressBar
