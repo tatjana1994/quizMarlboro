@@ -99,7 +99,7 @@ const Carousel = () => {
       {showConfetti && (
         <ConfettiCannon
           ref={confettiRef}
-          count={300}
+          count={50}
           origin={{ x: 0, y: 0 }}
           fadeOut
           autoStart
